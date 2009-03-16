@@ -6,6 +6,7 @@
 # ----------------------------------------------------------------------------
 
 from __future__ import with_statement 
+import datetime
 import urllib2
 import re
 import sys
@@ -30,35 +31,35 @@ class MySqlDumper:
         self.opener = urllib2.build_opener(urllib2.HTTPBasicAuthHandler(pword_manager))
         
     def dump(self, status = lambda data: None, data = dict()):
-        new_data = self.get_data_dictionary(self.opener.open("%s/dump.php" % self.url, self.get_data(data)).read())
+        new_data = self.get_data_dictionary(self.opener.open('%s/dump.php' % self.url, self.get_data(data)).read())
         if(len(new_data) == 0):
             return data
         status(new_data)
         return self.dump(status, new_data);
         
     def download(self, data, filename):
-        with open(filename, "wb") as file:
-            file.write(self.opener.open("%swork/backup/%s" % (self.url, data['backupdatei'])).read())        
+        with open(filename, 'wb') as file:
+            file.write(self.opener.open('%swork/backup/%s' % (self.url, data['backupdatei'])).read())        
 
     def get_data_dictionary(self, html):
         return dict([(match)for match in re.findall(self.input_box_pattern,html)])
 
     def get_data(self, dictionary):
-        return "&".join(["%s=%s" % (key, dictionary[key]) for key in dictionary])
+        return '&'.join(['%s=%s' % (key, dictionary[key]) for key in dictionary])
 
 
 def print_status(data):
-    print "%s of %s" % (data['countdata'], data['totalrecords'])
+    print '%s of %s' % (data['countdata'], data['totalrecords'])
         
 def main(args=sys.argv):
     if len(args) <> 5:
-        print "Too few argument were given. %d" % len(args)
-        print "MySqlDumper.py <url> <user> <password> <download_file_name>"
+        print 'Too few argument were given. %d' % len(args)
+        print 'MySqlDumper.py <url> <user> <password> <download_file_name>'
         return
         
     dumper = MySqlDumper(args[1], args[2], args[3])
-    dumper.download(dumper.dump(print_status), args[4])
-    print "Done."
+    dumper.download(dumper.dump(print_status), datetime.datetime.now().strftime(args[4]))
+    print 'Done.'
 
 if __name__ == "__main__":
     main()
