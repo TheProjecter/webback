@@ -1,0 +1,1 @@
+This project consist of a client that can help to automate the backup process of a MySQL database by controlling the MySQL backup web application [MySQLDumper](http://mysqldumper.de). It can help you if you want to backup your database automatically but do not have the proper access permission to create a cronjob on your web server.
